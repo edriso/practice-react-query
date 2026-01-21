@@ -1,36 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { axiosInstance } from './utils';
-import { toast } from 'react-toastify';
+import { useUpdateTaskStatus, useDeleteTask } from './reactQueryCustomHooks';
 
 const SingleItem = ({ item }) => {
-  const queryClient = useQueryClient();
-
-  const { isPending, mutate: toggleTaskStatus } = useMutation({
-    mutationFn: ({ taskId, taskIsDone }) =>
-      axiosInstance.patch(`/${taskId}`, { isDone: !taskIsDone }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['tasks'],
-      });
-    },
-    onError: (error) => {
-      toast.error(error.response?.data || error.message);
-    },
-  });
-
-  const { isPending: isDeleting, mutate: deleteTask } = useMutation({
-    mutationFn: (taskId) => axiosInstance.delete(`/${taskId}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['tasks'],
-      });
-
-      toast.success('Task deleted!');
-    },
-    onError: (error) => {
-      toast.error(error.response?.data || error.message);
-    },
-  });
+  const { isPending, toggleTaskStatus } = useUpdateTaskStatus();
+  const { isDeleting, deleteTask } = useDeleteTask();
 
   return (
     <div className='single-item'>

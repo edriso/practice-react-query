@@ -1,18 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
-import { axiosInstance } from './utils';
 import SingleItem from './SingleItem';
+import { useFetchTasks } from './reactQueryCustomHooks';
 
 const Items = () => {
-  // useQuery handles data fetching, caching, and loading/error states
-  const { isPending, data, error, isError } = useQuery({
-    queryKey: ['tasks'], // unique key for caching this query
-    // queryFn: () => axiosInstance.get('/'),
-    queryFn: async () => {
-      // axios response data is nested inside the `data` property
-      const { data } = await axiosInstance.get('/'); // data = {taskList: Array(4)}
-      return data;
-    },
-  });
+  const { isPending, data, error, isError } = useFetchTasks();
 
   if (isPending) {
     return <p style={{ marginTop: '1rem' }}>Loading...</p>;
