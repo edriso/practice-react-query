@@ -18,6 +18,20 @@ const SingleItem = ({ item }) => {
     },
   });
 
+  const { isPending: isDeleting, mutate: deleteTask } = useMutation({
+    mutationFn: (taskId) => axiosInstance.delete(`/${taskId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['tasks'],
+      });
+
+      toast.success('Task deleted!');
+    },
+    onError: (error) => {
+      toast.error(error.response?.data || error.message);
+    },
+  });
+
   return (
     <div className='single-item'>
       <input
@@ -42,7 +56,9 @@ const SingleItem = ({ item }) => {
       <button
         className='btn remove-btn'
         type='button'
-        onClick={() => console.log('delete task')}
+        onClick={() => deleteTask(item.id)}
+        disabled={isDeleting}
+        style={isDeleting ? { opacity: 0.5 } : undefined}
       >
         delete
       </button>
