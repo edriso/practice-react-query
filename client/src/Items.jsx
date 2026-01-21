@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import SingleItem from './SingleItem';
 import { axiosInstance } from './utils';
+import SingleItem from './SingleItem';
 
 const Items = () => {
   // useQuery handles data fetching, caching, and loading/error states
-  // `isLoading` was renamed to `isPending` in newer React Query versions
-  const { isLoading, data, error, isError } = useQuery({
+  const { isPending, data, error, isError } = useQuery({
     queryKey: ['tasks'], // unique key for caching this query
     // queryFn: () => axiosInstance.get('/'),
     queryFn: async () => {
@@ -15,10 +14,11 @@ const Items = () => {
     },
   });
 
-  if (isLoading) {
+  if (isPending) {
     return <p style={{ marginTop: '1rem' }}>Loading...</p>;
   }
 
+  // if (error) {
   if (isError) {
     return <p style={{ marginTop: '1rem' }}>There was an error...</p>;
   }
